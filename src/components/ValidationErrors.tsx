@@ -1,6 +1,6 @@
 import {parse} from "date-fns";
 import {formatStr} from "./FormatStr.tsx";
-import type {Row} from "./Alternative.tsx";
+import type {Row} from "./App.tsx";
 import {useAtom} from "jotai";
 import {RowsAtom} from "./RowsAtom.tsx";
 
@@ -11,7 +11,7 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
         return <>
             {
                 parse(row.startDate, formatStr, new Date()) > parse(row.endDate, formatStr, new Date()) &&
-                <p>Start date is not before end date!</p>
+                <div className="badge badge-error badge-xs">Start date is not before end date!</div>
             }
         </>;
     }
@@ -30,7 +30,7 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
         return <>
             {
                 conflicts.length > 0 &&
-                <p>Attendee conflict with exam(s): {conflicts.map(c => c.examName).join(", ")}</p>
+                <div className="badge badge-error badge-xs">Attendee conflict with exam(s): {conflicts.map(c => c.examName).join(", ")}</div>
             }
         </>
     }
@@ -39,7 +39,7 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
         return <>
             {
                 row.attendees.some(a => !attendees.includes(a)) &&
-                <p>One or more attendees do not exist in the global attendee list!</p>
+                <div className="badge badge-error badge-xs">Unknown attendee(s)</div>
             }
         </>
     }

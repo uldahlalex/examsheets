@@ -1,5 +1,5 @@
 import {atomWithStorage} from "jotai/utils";
-import {type Row} from "./Alternative.tsx";
+import {type Row} from "./App.tsx";
 import { format } from "date-fns";
 import {formatStr} from "./FormatStr.tsx";
 
