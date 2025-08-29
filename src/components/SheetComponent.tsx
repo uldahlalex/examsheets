@@ -84,9 +84,7 @@ export default function SheetComponent() {
 
                     <option value="startDate">Start Date Ascending</option>
                 </select>
-                    <button className="btn  btn-xs join-item btn-accent" onClick={() => {
-
-                    }}>Gem i central DB</button>
+             
                 </div>
        
         
@@ -179,6 +177,12 @@ export default function SheetComponent() {
                     </tbody>
                 </table>
             </div>
+Eksamensplan for hver person:
+            {
+                rows.filter(r => r.attendees.includes('jle')).map(exam => {
+                    return <div key={exam.uid}>{exam.examName} {exam.startDate} - {exam.endDate}</div>
+                })
+            }
         </div>
 
     </>)
