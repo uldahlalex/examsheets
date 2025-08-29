@@ -1,12 +1,9 @@
-import {useAtom} from "jotai";
-import {SheetsAtom} from "./SheetsAtom.tsx";
 import {format} from "date-fns";
 import {formatStr} from "./FormatStr.tsx";
 import ValidationErrors from "./ValidationErrors.tsx";
 import {AllAttendees} from "./AllAttendees.tsx";
-import {AllAttendeesAtom} from "./AllAttendeesAtom.tsx";
 import {useState} from "react";
-import {useRows} from "./useRows.ts";
+import {useSheet} from "./useSheet.ts";
 import {useParams} from "react-router";
 
 export interface Row {
@@ -24,8 +21,7 @@ export type SheetParams = {
 export default function SheetComponent() {
 
     const params = useParams<SheetParams>();
-    const [attendees] = useAtom(AllAttendeesAtom)
-    const [rows, setRows] = useRows(params.sheetId!);
+    const [rows, setRows, attendees, setAttendees] = useSheet(params.sheetId!);
     const [order, setOrder] = useState<string>('examName')
     const orderedRows: Row[] = [...rows].sort((a: Row, b: Row): number => {
         if (order === 'examName') {
@@ -68,7 +64,7 @@ export default function SheetComponent() {
                         style={{ 
                             // @ts-ignore
                             positionAnchor: "--anchor-1" } }>
-                        <AllAttendees />
+                        <AllAttendees sheet={params.sheetId!} />
                     </ul>
                     <button className="btn join-item btn-xs" popoverTarget="popover-2" style={{
                         // @ts-ignore

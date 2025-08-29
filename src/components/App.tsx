@@ -32,32 +32,32 @@ export function Home() {
     const [sheets, setSheets] = useAtom(SheetsAtom);
     const navigate = useNavigate();
     return <>
-        <div className="flex justify-end">
+  
         <div className=" join">            
-            <div className="btn btn-ghost">Vælg en eksamens-sæson:</div>
+            <div className="flex flex-col">Vælg en eksamens-sæson:</div>
 
             {
             sheets.map(sheet => 
-                <div className="join">
+                <span key={sheet.name} className="">
                     <div>{sheet.name}</div>
-                    <button key={sheet.name} className="btn btn-accent join-item" onClick={() => {
+                    <button className="btn btn-accent join-item" onClick={() => {
                     navigate('/'+sheet.name)
                 }}>Gå til</button>
-                    <button key={sheet.name} className="btn btn-accent join-item" onClick={() => {
+                    <button className="btn btn-accent join-item" onClick={() => {
                         const d1: Sheet = {...sheet, name: sheet.name+crypto.randomUUID()}
 
                         const duplicate = [...sheets, d1];
                         setSheets(duplicate)
                     }}>Dupliker</button>
-                    <button key={sheet.name} className="btn btn-error join-item" onClick={() => {
+                    <button  className="btn btn-error join-item" onClick={() => {
                         setSheets(sheets.filter(s => s.name !== sheet.name))
                     }}>Slet</button>
-                </div>
+                </span>
                 
            )
             
         }</div>
-        </div>
+      
         <Outlet />
 
     </>

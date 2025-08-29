@@ -1,7 +1,5 @@
-import {useAtom} from "jotai";
-import {useState} from "react";
 import type {AttendeeProps} from "./AttendeeProps.tsx";
-import {AllAttendeesAtom} from "./AllAttendeesAtom.tsx";
+import {useSheet} from "./useSheet.ts";
 
 function Attendee(prop: AttendeeProps) {
 
@@ -17,10 +15,10 @@ function Attendee(prop: AttendeeProps) {
     </div>;
 }
 
-export function AllAttendees() {
-
-    const [attendees, setAttendees] = useAtom(AllAttendeesAtom);
-
+// @ts-ignore
+export function AllAttendees(sheet) {
+    console.log(sheet)
+    const [rows, setRows,attendees, setAttendees] = useSheet(sheet.sheet)
     return <div>
 
         <div className="">
