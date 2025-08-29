@@ -1,8 +1,8 @@
 import {parse} from "date-fns";
 import {formatStr} from "./FormatStr.tsx";
-import type {Row} from "./App.tsx";
+import type {Row} from "./SheetComponent.tsx";
 import {useAtom} from "jotai";
-import {RowsAtom} from "./RowsAtom.tsx";
+import {SheetsAtom} from "./SheetsAtom.tsx";
 
 export default function ValidationErrors(row: Row, rows: Row[], attendees: string[]) {
     

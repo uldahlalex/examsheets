@@ -1,186 +1,64 @@
+import {type Sheet, SheetsAtom} from "./SheetsAtom.tsx";
 import {useAtom} from "jotai";
-import {RowsAtom} from "./RowsAtom.tsx";
-import {format} from "date-fns";
-import {formatStr} from "./FormatStr.tsx";
-import ValidationErrors from "./ValidationErrors.tsx";
-import {AllAttendees} from "./AllAttendees.tsx";
-import {AllAttendeesAtom} from "./AllAttendeesAtom.tsx";
-import {useState} from "react";
-
-export interface Row {
-    uid: string;
-    examName: string;
-    attendees: string[],
-    startDate: string;
-    endDate: string;
-}
+import {createBrowserRouter, Outlet, RouterProvider, useNavigate} from "react-router";
+import SheetComponent from "./SheetComponent.tsx";
 
 export default function App() {
-
-    const [attendees] = useAtom(AllAttendeesAtom)
-    const [rows, setRows] = useAtom(RowsAtom)
-    const [order, setOrder] = useState<string>('examName')
-    const orderedRows: Row[] = [...rows].sort((a: Row, b: Row): number => {
-        if (order === 'examName') {
-            return a.examName.localeCompare(b.examName);
-        }
-        if(order === 'startDate') {
-            return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-        }
-        return 0;
-        
-        });
     
-
-    return (<>
-   
-        <button className="btn btn-primary" onClick={() => {
-            
-        }}>Gem i central DB</button>
-        <button className="btn btn-primary" onClick={() => {
-            //todo
-        }}>Gem lokal stilstandsbillede</button>
-     
-        <div className="mt-15">
-            <div className=" flex">
-                <div className="join">
-
-                    <button className="btn btn-xs btn-primary join-item" onClick={() => setRows([...rows, {
-                        uid: crypto.randomUUID(),
-                        startDate: format(new Date(), formatStr),
-                        examName: '',
-                        endDate: format(new Date(), formatStr),
-                        attendees: [],
-                    }])}>+ Add row
-                    </button>
-                    <button className="btn join-item btn-xs" popoverTarget="popover-1" style={{
-                        // @ts-ignore
-                        anchorName: "--anchor-1" } }>
-                        Attendees
-                    </button>
-
-                    <ul className="dropdown menu w-45 rounded-box bg-base-100 shadow-sm"
-                        popover="auto" id="popover-1"
-                    
-                        style={{ 
-                            // @ts-ignore
-                            positionAnchor: "--anchor-1" } }>
-                        <AllAttendees />
-                    </ul>
-                    <button className="btn join-item btn-xs" popoverTarget="popover-2" style={{
-                        // @ts-ignore
-                        anchorName: "--anchor-1" } }>
-                        Now allowed dates
-                    </button>
-
-                    <ul className="dropdown menu w-45 rounded-box bg-base-100 shadow-sm"
-                        popover="auto" id="popover-2" style={{
-                        // @ts-ignore
-                        positionAnchor: "--anchor-1" } }>
-                    {/*    todo*/}
-                    </ul>
-                    <select className="select select-xs join-item" value={order} onChange={e => setOrder(e.target.value)}>
-                    <option value="">Manual ordering</option>
-                    <option value="examName">Semester ascending</option>
-
-                    <option value="startDate">Start Date Ascending</option>
-                </select>
-                
-                </div>
-       
-        
-            </div>
-
-            <div className="overflow-x-auto">
-
-                <table className="table table-xs">
-                    <thead>
-                    <tr>
-                        <th>Actions</th>
-                        <th>Exam Name</th>
-                        <th>Attendees</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Validation problems</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+    
+    
+    return <div>
+        <RouterProvider router={createBrowserRouter([
+            {
+                path: '',
+                element: <Home />,
+                children: [
                     {
-                        orderedRows.map(row => {
-                            return (<tr key={row.uid}>
-                                <td className="flex h-max">
-                                    <span></span>
-                                    <button className="btn btn-xs btn-error" onClick={() => {
-                                        setRows(rows.filter(r => r.uid !== row.uid))
-                                    }}>🗑️
-                                    </button>
-                                    <span className="flex flex-col">     
-                                        <button onClick={() => {
-                                            setOrder('')
-                                            const duplicate = [...rows];
-                                            const index = duplicate.findIndex(r => r.uid == row.uid);
-                                            if (index > 0) {
-                                                const temp = duplicate[index - 1];
-                                                duplicate[index - 1] = duplicate[index];
-                                                duplicate[index] = temp;
-                                                setRows(duplicate)
-                                            }
-                                        }} className="btn btn-xs">☝️</button>
-                                    <button onClick={() => {
-                                        setOrder('')
-                                        const duplicate = [...rows];
-                                        const index = duplicate.findIndex(r => r.uid == row.uid);
-                                        if (index < duplicate.length - 1) {
-                                            const temp = duplicate[index + 1];
-                                            duplicate[index + 1] = duplicate[index];
-                                            duplicate[index] = temp;
-                                            setRows(duplicate)
-                                        }
-                                    }} className="btn btn-xs">👇</button></span>
-
-                                </td>
-                                <td>{
-                                    <input value={row.examName} onChange={e => {
-                                        const duplicate = [...rows];
-                                        const existing = duplicate.find(r => r.uid == row.uid)!;
-                                        existing.examName = e.target.value;
-                                        setRows(duplicate)
-                                    }}/>
-                                }</td>
-                                <td>
-                                    <input  value={row.attendees} onChange={e => {
-                                        const duplicate = [...rows];
-                                        const existing = duplicate.find(r => r.uid == row.uid)!;
-                                        existing.attendees = e.target.value.split(',').map(s => s.trim());
-                                        setRows(duplicate)
-                                    }}/>
-                                </td>
-                                <td className="w-40">
-                                    <input value={row.startDate} onChange={e => {
-                                        const duplicate = [...rows];
-                                        const existing = duplicate.find(r => r.uid == row.uid)!;
-                                        existing.startDate = e.target.value;
-                                        setRows(duplicate)
-                                    }}/>{
-                                }</td>
-                                <td>
-
-                                    <input className="w-40" value={row.endDate} onChange={e => {
-                                        const duplicate = [...rows];
-                                        const existing = duplicate.find(r => r.uid == row.uid)!;
-                                        existing.endDate = e.target.value;
-                                        setRows(duplicate)
-                                    }}/></td>
-                                {ValidationErrors(row, rows, attendees)}
-                            </tr>)
-                        })
+                        element: <SheetComponent />,
+                        path: '/:sheetId'
                     }
-                    </tbody>
-                </table>
-            </div>
+                ]
+            }
+            
+        ])} />
+
+    
+        
+        
+    </div>;
+}
+
+export function Home() {
+    const [sheets, setSheets] = useAtom(SheetsAtom);
+    const navigate = useNavigate();
+    return <>
+        <div className="flex justify-end">
+        <div className=" join">            
+            <div className="btn btn-ghost">Vælg en eksamens-sæson:</div>
+
+            {
+            sheets.map(sheet => 
+                <div className="join">
+                    <div>{sheet.name}</div>
+                    <button key={sheet.name} className="btn btn-accent join-item" onClick={() => {
+                    navigate('/'+sheet.name)
+                }}>Gå til</button>
+                    <button key={sheet.name} className="btn btn-accent join-item" onClick={() => {
+                        const d1: Sheet = {...sheet, name: sheet.name+crypto.randomUUID()}
+
+                        const duplicate = [...sheets, d1];
+                        setSheets(duplicate)
+                    }}>Dupliker</button>
+                    <button key={sheet.name} className="btn btn-error join-item" onClick={() => {
+                        setSheets(sheets.filter(s => s.name !== sheet.name))
+                    }}>Slet</button>
+                </div>
+                
+           )
+            
+        }</div>
         </div>
+        <Outlet />
 
-    </>)
-
-
+    </>
 }
