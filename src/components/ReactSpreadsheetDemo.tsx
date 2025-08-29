@@ -1,15 +1,16 @@
 import {useState} from 'react';
 import Spreadsheet, {type CellBase, type Matrix} from 'react-spreadsheet';
 import type {Row} from "../types/row.ts";
-import {useAtom} from "jotai/react/useAtom";
+import {useAtom} from "jotai";
 import {ExamsAtom} from "../state/atoms.ts";
-import {convertFromSpreadsheetData, convertToSpreadsheetData} from "../functions/convertToSpreadsheetData.ts";
-import type {CellData} from "../types/CellData.tsx";
+import {convertToSpreadsheetData, convertFromSpreadsheetData} from "../functions/convertToSpreadsheetData.ts";
 
 export default function ReactSpreadsheetDemo() {
-    const [exams, setExams] = useAtom(ExamsAtom);
-    const [data, setData] = useState<CellData>(convertToSpreadsheetData(exams));
+     const [exams, setExams] = useAtom(ExamsAtom);
+     
+     const data: Matrix<CellBase> =  convertToSpreadsheetData(exams);
 
+     
 
     const addNewRow = () => {
         const newExam: Row = {
@@ -18,24 +19,17 @@ export default function ReactSpreadsheetDemo() {
             startTime: new Date(),
             endTime: new Date(),
         };
-        
+
         const updatedExams = [...exams, newExam];
         setExams(updatedExams);
-        setData(convertToSpreadsheetData(updatedExams));
     };
 
-    const handleDataChange = (newData: ((prevState: CellData) => CellData) | Matrix<CellBase<any>>) => {
-        let actualData: CellData;
-        
-        if (typeof newData === 'function') {
-            actualData = newData(data);
-        } else {
-            actualData = newData as CellData;
-        }
-        const nonHeaderRows = actualData.slice(1);
+    const handleDataChange = (newData: Matrix<CellBase>) => {
+        const nonHeaderRows = newData.slice(1);
         const lastRowHasData = nonHeaderRows.length > 0 && 
             nonHeaderRows[nonHeaderRows.length - 1].some(cell => cell?.value && cell.value !== '');
-        
+
+        let actualData = newData;
         if (lastRowHasData) {
             // Add an empty row
             const emptyRow = [
@@ -44,20 +38,26 @@ export default function ReactSpreadsheetDemo() {
                 { value: '' },
                 { value: '' }
             ];
-            actualData = [...actualData, emptyRow];
+            actualData = [...newData, emptyRow];
         }
         
-        setData(actualData);
-        const updatedExams = convertFromSpreadsheetData(actualData);
-        setExams(updatedExams);
     };
 
-  return (
+    const handleSave = () => {
+            const updatedExams = convertFromSpreadsheetData(data);
+            setExams(updatedExams);
+        
+    };
+
+    return (
       <>
 
-      <div>
-          <button onClick={addNewRow}>
+      <div style={{ marginBottom: '10px' }}>
+          <button onClick={addNewRow} style={{ marginRight: '10px' }}>
               Add New Row
+          </button>
+          <button onClick={handleSave} style={{ backgroundColor: '#007bff', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              Save
           </button>
       </div>
 
