@@ -20,20 +20,26 @@ export default function App() {
     const [attendees] = useAtom(AllAttendeesAtom)
     const [rows, setRows] = useAtom(RowsAtom)
     const [order, setOrder] = useState<string>('examName')
-    const orderedRows: Row[] = [...rows].sort((a, b) => {
+    const orderedRows: Row[] = [...rows].sort((a: Row, b: Row): number => {
         if (order === 'examName') {
             return a.examName.localeCompare(b.examName);
         }
         if(order === 'startDate') {
             return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
         }
-        return rows;
+        return 0;
         
         });
     
 
     return (<>
    
+        <button className="btn btn-primary" onClick={() => {
+            
+        }}>Gem i central DB</button>
+        <button className="btn btn-primary" onClick={() => {
+            //todo
+        }}>Gem lokal stilstandsbillede</button>
      
         <div className="mt-15">
             <div className=" flex">
@@ -47,13 +53,31 @@ export default function App() {
                         attendees: [],
                     }])}>+ Add row
                     </button>
-                    <button className="btn join-item btn-xs" popoverTarget="popover-1" style={{ anchorName: "--anchor-1" } }>
+                    <button className="btn join-item btn-xs" popoverTarget="popover-1" style={{
+                        // @ts-ignore
+                        anchorName: "--anchor-1" } }>
                         Attendees
                     </button>
 
                     <ul className="dropdown menu w-45 rounded-box bg-base-100 shadow-sm"
-                        popover="auto" id="popover-1" style={{ positionAnchor: "--anchor-1" } }>
+                        popover="auto" id="popover-1"
+                    
+                        style={{ 
+                            // @ts-ignore
+                            positionAnchor: "--anchor-1" } }>
                         <AllAttendees />
+                    </ul>
+                    <button className="btn join-item btn-xs" popoverTarget="popover-2" style={{
+                        // @ts-ignore
+                        anchorName: "--anchor-1" } }>
+                        Now allowed dates
+                    </button>
+
+                    <ul className="dropdown menu w-45 rounded-box bg-base-100 shadow-sm"
+                        popover="auto" id="popover-2" style={{
+                        // @ts-ignore
+                        positionAnchor: "--anchor-1" } }>
+                    {/*    todo*/}
                     </ul>
                     <select className="select select-xs join-item" value={order} onChange={e => setOrder(e.target.value)}>
                     <option value="">Manual ordering</option>
