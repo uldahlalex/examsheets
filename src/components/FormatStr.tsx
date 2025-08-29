@@ -1,0 +1,1 @@
+export const formatStr = 'yyyy/MM/dd HH:mm';
