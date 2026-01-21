@@ -1,7 +1,7 @@
 import {parse} from "date-fns";
-import {formatStr} from "./FormatStr.tsx";
+import {formatStr} from "../../models/FormatStr.tsx";
+import type {Row} from "../../models/Row.tsx";
 
-import type {Row} from "./Row.tsx";
 
 export default function ValidationErrors(row: Row, rows: Row[], attendees: string[], classes: string[]) {
     const errors: { type: string; message: string }[] = [];

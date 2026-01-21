@@ -1,7 +1,7 @@
-import type {AttendeeProps} from "./AttendeeProps.tsx";
 import {useSheet} from "./useSheet.ts";
+import type {AttendeeProps} from "../../models/AttendeeProps.tsx";
 
-function ClassItem(prop: AttendeeProps) {
+function Attendee(prop: AttendeeProps) {
     return (
         <div className="flex items-center gap-2 p-2 bg-base-100 rounded-lg">
             <input
@@ -19,29 +19,29 @@ function ClassItem(prop: AttendeeProps) {
     );
 }
 
-export function AllClasses(props: { sheet: string }) {
-    const [, , , , classes, setClasses] = useSheet(props.sheet);
+export function AllAttendees(props: { sheet: string }) {
+    const [, , attendees, setAttendees] = useSheet(props.sheet);
 
     return (
         <div className="space-y-3">
             <div className="space-y-2">
-                {classes.length === 0 ? (
+                {attendees.length === 0 ? (
                     <p className="text-sm text-base-content/50 text-center py-4">
-                        Ingen klasser tilføjet endnu
+                        Ingen bedømmere tilføjet endnu
                     </p>
                 ) : (
-                    classes.map(klasse => (
-                        <ClassItem
-                            key={klasse}
+                    attendees.map(attendee => (
+                        <Attendee
+                            key={attendee}
                             onDelete={() => {
-                                setClasses(classes.filter(c => c !== klasse));
+                                setAttendees(attendees.filter(a => a !== attendee));
                             }}
-                            attendee={klasse}
-                            setAttendee={(newClass) => {
-                                const duplicate = [...classes];
-                                const index = duplicate.findIndex(c => c === klasse);
-                                duplicate[index] = newClass;
-                                setClasses(duplicate);
+                            attendee={attendee}
+                            setAttendee={(newAttendee) => {
+                                const duplicate = [...attendees];
+                                const index = duplicate.findIndex(a => a === attendee);
+                                duplicate[index] = newAttendee;
+                                setAttendees(duplicate);
                             }}
                         />
                     ))
@@ -50,12 +50,12 @@ export function AllClasses(props: { sheet: string }) {
             <div>
                 <input
                     type="text"
-                    placeholder="Tilføj klasse (tryk Enter)"
+                    placeholder="Tilføj bedømmer (tryk Enter)"
                     className="input input-bordered input-sm w-full"
                     onKeyDown={e => {
                         if (e.key === 'Enter' && e.currentTarget.value.trim() !== '') {
-                            if (!classes.includes(e.currentTarget.value.trim())) {
-                                setClasses([...classes, e.currentTarget.value.trim()]);
+                            if (!attendees.includes(e.currentTarget.value.trim())) {
+                                setAttendees([...attendees, e.currentTarget.value.trim()]);
                             }
                             e.currentTarget.value = '';
                         }

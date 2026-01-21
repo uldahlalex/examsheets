@@ -1,8 +1,8 @@
-import {type Sheet, SheetsAtom} from "./SheetsAtom.tsx";
 import {useAtom} from "jotai";
 import {createBrowserRouter, RouterProvider, useNavigate} from "react-router";
-import SheetComponent from "./SheetComponent.tsx";
 import {useState} from "react";
+import SheetComponent from "./sheet/SheetComponent.tsx";
+import {type Sheet, SheetsAtom} from "../models/SheetsAtom.tsx";
 
 export default function App() {
     return <div>

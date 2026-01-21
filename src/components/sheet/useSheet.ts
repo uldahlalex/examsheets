@@ -1,7 +1,7 @@
 import {useAtom} from "jotai";
-import {SheetsAtom} from "./SheetsAtom.tsx";
+import {SheetsAtom} from "../../models/SheetsAtom.tsx";
+import type {Row} from "../../models/Row.tsx";
 
-import type {Row} from "./Row.tsx";
 
 export function useSheet(sheet: string) {
     const [sheets, setSheets] = useAtom(SheetsAtom);
