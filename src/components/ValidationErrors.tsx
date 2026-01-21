@@ -5,48 +5,64 @@ import {useAtom} from "jotai";
 import {SheetsAtom} from "./SheetsAtom.tsx";
 
 export default function ValidationErrors(row: Row, rows: Row[], attendees: string[]) {
-    
+    const errors: { type: string; message: string }[] = [];
 
-    function isBeforeAfterEnd() {
-        return <>
-            {
-                parse(row.startDate, formatStr, new Date()) > parse(row.endDate, formatStr, new Date()) &&
-                <div className="badge badge-error badge-xs">Start date is not before end date!</div>
-            }
-        </>;
+    const startDate = parse(row.startDate, formatStr, new Date());
+    const endDate = parse(row.endDate, formatStr, new Date());
+
+    if (startDate > endDate) {
+        errors.push({
+            type: 'time',
+            message: 'Starttid er efter sluttid'
+        });
     }
 
-    function isAttendeeConflict() {
-        const attendees = row.attendees;
-        //Check if any other row has the same attendee and overlapping time
-        const conflicts = rows.filter(r => r.uid !== row.uid && r.attendees.some(a => attendees.includes(a)) &&
-            ((parse(row.startDate, formatStr, new Date()) >= parse(r.startDate, formatStr, new Date()) &&
-                parse(row.startDate, formatStr, new Date()) < parse(r.endDate, formatStr, new Date())) ||
-                (parse(row.endDate, formatStr, new Date()) > parse(r.startDate, formatStr, new Date()) &&
-                    parse(row.endDate, formatStr, new Date()) <= parse(r.endDate, formatStr, new Date())) ||
-                (parse(row.startDate, formatStr, new Date()) <= parse(r.startDate, formatStr, new Date()) &&
-                    parse(row.endDate, formatStr, new Date()) >= parse(r.endDate, formatStr, new Date()))
-            ));
-        return <>
-            {
-                conflicts.length > 0 &&
-                <div className="badge badge-error badge-xs">Attendee conflict with exam(s): {conflicts.map(c => c.examName).join(", ")}</div>
-            }
-        </>
+    const conflicts = rows.filter(r =>
+        r.uid !== row.uid &&
+        r.attendees.some(a => row.attendees.includes(a)) &&
+        ((startDate >= parse(r.startDate, formatStr, new Date()) &&
+            startDate < parse(r.endDate, formatStr, new Date())) ||
+            (endDate > parse(r.startDate, formatStr, new Date()) &&
+                endDate <= parse(r.endDate, formatStr, new Date())) ||
+            (startDate <= parse(r.startDate, formatStr, new Date()) &&
+                endDate >= parse(r.endDate, formatStr, new Date())))
+    );
+
+    if (conflicts.length > 0) {
+        errors.push({
+            type: 'conflict',
+            message: `Konflikt med: ${conflicts.map(c => c.examName || 'Unavngivet').join(', ')}`
+        });
     }
 
-    function doAttendeesExist() {
-        return <>
-            {
-                row.attendees.some(a => !attendees.includes(a)) &&
-                <div className="badge badge-error badge-xs">Unknown attendee(s)</div>
-            }
-        </>
+    const unknownAttendees = row.attendees.filter(a => a && !attendees.includes(a));
+    if (unknownAttendees.length > 0) {
+        errors.push({
+            type: 'attendee',
+            message: `Ukendt bedømmer: ${unknownAttendees.join(', ')}`
+        });
     }
 
-    return <td>
-        {isBeforeAfterEnd()}
-        {isAttendeeConflict()}
-        {doAttendeesExist()}
-    </td>;
+    if (errors.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="tooltip" data-tip="Ingen problemer">
+                    <span className="text-success text-xl">✓</span>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col gap-1">
+            {errors.map((error, idx) => (
+                <div
+                    key={idx}
+                    className={`alert alert-error py-1 px-2 text-xs ${error.type === 'time' ? 'alert-warning' : ''}`}
+                >
+                    <span>{error.message}</span>
+                </div>
+            ))}
+        </div>
+    );
 }
