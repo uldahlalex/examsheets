@@ -9,13 +9,13 @@ export default function App() {
         <RouterProvider router={createBrowserRouter([
             {
                 path: '/',
-                element: <Home />
+                element: <Home/>
             },
             {
                 path: '/:sheetId',
-                element: <SheetComponent />
+                element: <SheetComponent/>
             }
-        ])} />
+        ])}/>
     </div>;
 }
 
@@ -50,7 +50,8 @@ export function Home() {
                                     </button>
                                     <div className="dropdown dropdown-end">
                                         <label tabIndex={0} className="btn btn-ghost btn-sm">⋮</label>
-                                        <ul tabIndex={0} className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 z-10">
+                                        <ul tabIndex={0}
+                                            className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 z-10">
                                             <li>
                                                 <button onClick={() => {
                                                     const d1: Sheet = {...sheet, name: sheet.name + '-kopi'}
@@ -76,7 +77,8 @@ export function Home() {
                         </div>
                     ))}
 
-                    <div className="card bg-base-100 shadow-xl border-2 border-dashed border-base-300 hover:border-primary transition-colors">
+                    <div
+                        className="card bg-base-100 shadow-xl border-2 border-dashed border-base-300 hover:border-primary transition-colors">
                         <div className="card-body items-center justify-center">
                             <div className="text-6xl text-base-300 mb-4">+</div>
                             <h3 className="card-title text-lg">Ny sæson</h3>
@@ -91,7 +93,8 @@ export function Home() {
                                         setSheets([...sheets, {
                                             name: newSheetName.trim(),
                                             rows: [],
-                                            assessors: []
+                                            assessors: [],
+                                            classes: []
                                         }]);
                                         setNewSheetName('');
                                     }
@@ -105,7 +108,8 @@ export function Home() {
                                         setSheets([...sheets, {
                                             name: newSheetName.trim(),
                                             rows: [],
-                                            assessors: []
+                                            assessors: [],
+                                            classes: []
                                         }]);
                                         setNewSheetName('');
                                     }
