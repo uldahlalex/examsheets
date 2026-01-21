@@ -13,7 +13,7 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
     if (startDate > endDate) {
         errors.push({
             type: 'time',
-            message: 'Starttid er efter sluttid'
+            message: 'Starttid efter sluttid'
         });
     }
 
@@ -31,7 +31,7 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
     if (conflicts.length > 0) {
         errors.push({
             type: 'conflict',
-            message: `Konflikt med: ${conflicts.map(c => c.examName || 'Unavngivet').join(', ')}`
+            message: `Konflikt: ${conflicts.map(c => c.examName || 'Unavngivet').join(', ')}`
         });
     }
 
@@ -39,30 +39,27 @@ export default function ValidationErrors(row: Row, rows: Row[], attendees: strin
     if (unknownAttendees.length > 0) {
         errors.push({
             type: 'attendee',
-            message: `Ukendt bedømmer: ${unknownAttendees.join(', ')}`
+            message: `Ukendt: ${unknownAttendees.join(', ')}`
         });
     }
 
     if (errors.length === 0) {
         return (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center">
                 <div className="tooltip" data-tip="Ingen problemer">
-                    <span className="text-success text-xl">✓</span>
+                    <span className="text-success text-lg">✓</span>
                 </div>
             </div>
         );
     }
 
+    const errorMessages = errors.map(e => e.message).join('\n');
+
     return (
-        <div className="flex flex-col gap-1">
-            {errors.map((error, idx) => (
-                <div
-                    key={idx}
-                    className={`alert alert-error py-1 px-2 text-xs ${error.type === 'time' ? 'alert-warning' : ''}`}
-                >
-                    <span>{error.message}</span>
-                </div>
-            ))}
+        <div className="flex items-center justify-center">
+            <div className="tooltip tooltip-left" data-tip={errorMessages}>
+                <span className="text-error text-lg cursor-help">⚠</span>
+            </div>
         </div>
     );
 }

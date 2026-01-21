@@ -1,31 +1,21 @@
 import {type Sheet, SheetsAtom} from "./SheetsAtom.tsx";
 import {useAtom} from "jotai";
-import {createBrowserRouter, Outlet, RouterProvider, useNavigate} from "react-router";
+import {createBrowserRouter, RouterProvider, useNavigate} from "react-router";
 import SheetComponent from "./SheetComponent.tsx";
 import {useState} from "react";
 
 export default function App() {
-    
-    
-    
     return <div>
         <RouterProvider router={createBrowserRouter([
             {
-                path: '',
-                element: <Home />,
-                children: [
-                    {
-                        element: <SheetComponent />,
-                        path: '/:sheetId'
-                    }
-                ]
+                path: '/',
+                element: <Home />
+            },
+            {
+                path: '/:sheetId',
+                element: <SheetComponent />
             }
-            
         ])} />
-
-    
-        
-        
     </div>;
 }
 
@@ -34,7 +24,7 @@ export function Home() {
     const navigate = useNavigate();
     const [newSheetName, setNewSheetName] = useState('');
 
-    return <>
+    return (
         <div className="min-h-screen bg-base-200">
             <div className="container mx-auto p-8">
                 <div className="mb-8">
@@ -128,7 +118,5 @@ export function Home() {
                 </div>
             </div>
         </div>
-
-        <Outlet />
-    </>
+    );
 }
